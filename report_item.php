@@ -73,6 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $brand === '' || $location_found === ''
     ) {
         $message = 'Please complete all required fields.';
+    } elseif (!preg_match('/^[0-9]+$/', $contact_no)) {
+        $message = 'Contact number must contain numbers only.';
     } elseif (!ctype_digit($category_id)) {
         $message = 'Please select a valid category.';
     } else {
@@ -332,9 +334,12 @@ function report_escape($value): string
 
             <label for="contact_no">Contact Number</label>
             <input
-                type="text"
+                type="tel"
                 id="contact_no"
                 name="contact_no"
+                inputmode="numeric"
+                pattern="[0-9]+"
+                title="Please enter numbers only."
                 value="<?= report_escape($contact_no) ?>"
                 required
             >
