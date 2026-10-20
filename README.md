@@ -24,9 +24,9 @@ A web-based Lost and Found Management System for Aces Polytechnic College. The s
 
 ```text
 Found_Claims/
-├── API/
-├── admin/
 ├── config/
+├── css/
+├── uploads/
 ├── student/
 ├── database/
 │   ├── schema.sql
