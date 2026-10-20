@@ -1,5 +1,3 @@
-
-
 <?php
 require_once __DIR__ . '/config/database.php';
 
@@ -177,7 +175,7 @@ if ($message === '') {
                         <?= htmlspecialchars($item['report_date']) ?>
                     </p>
 
-                    <a href="item_comments.php?item_id=<?= (int) $item['item_id'] ?>">
+                    <a href="item_comments.php?item_id=<?= (int) $item['item_id'] ?>" style="text-decoration: none; color: #1a89ff;">
                         Leave a private comment
                     </a>
                 </article>
@@ -195,7 +193,7 @@ if ($message === '') {
 </p>
     <?php endif; ?>
 
-    <p><a href="index.php">Staff login</a></p>
+    <!-- <p><a href="index.php" style="text-decoration: none ; ">Staff login</a></p> -->
 </main>
 
 </body>
