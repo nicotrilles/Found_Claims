@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </form>
         <?php endif; ?>
 
-        <p><a href="public_items.php">Back to Found Items</a></p>
+        <p><a href="public_items.php" style="text-decoration: none; color: #003c7b;">Back to Browse Found Items</a></p>
     </section>
 </main>
 </body>
