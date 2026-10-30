@@ -155,8 +155,10 @@ if (!$is_detail_page) {
     $sql = "
         SELECT
             claims.claim_id,
+            claims.claimant_type,
+            claims.claimant_name,
             students.student_no,
-            students.full_name AS claimant,
+            COALESCE(claims.claimant_name, students.full_name, 'Unknown claimant') AS claimant,
             items.item_name,
             claims.claim_date,
             claims.claim_status,
@@ -191,9 +193,14 @@ if (!$is_detail_page) {
             claims.claim_status,
             claims.verification_details,
             claims.remarks,
+            claims.claimant_type,
+            claims.claimant_name,
+            claims.claimant_contact,
+            claims.id_type,
+            claims.id_verified,
             students.student_no,
-            students.full_name AS claimant,
-            students.contact_no AS student_contact,
+            COALESCE(claims.claimant_name, students.full_name, 'Unknown claimant') AS claimant,
+            COALESCE(claims.claimant_contact, students.contact_no) AS student_contact,
             items.item_id,
             items.item_name,
             items.description AS item_description,
@@ -268,6 +275,7 @@ if (!$is_detail_page) {
                         <thead>
                             <tr>
                                 <th>Claim ID</th>
+                                <th>Claimant Type</th>
                                 <th>Student No.</th>
                                 <th>Claimant</th>
                                 <th>Item</th>
@@ -281,6 +289,7 @@ if (!$is_detail_page) {
                             <?php while ($row = $claims->fetch_assoc()): ?>
                                 <tr>
                                     <td><?= e($row['claim_id']) ?></td>
+                                    <td><?= e($row['claimant_type'] ?? 'Student') ?></td>
                                     <td><?= e($row['student_no']) ?></td>
                                     <td><?= e($row['claimant']) ?></td>
                                     <td><?= e($row['item_name']) ?></td>
@@ -328,10 +337,17 @@ if (!$is_detail_page) {
         </section>
 
         <section class="card">
-            <h2>Student Information</h2>
-            <p><strong>Student Number:</strong> <?= e($claim['student_no']) ?></p>
+            <h2>Claimant Information</h2>
+            <p><strong>Claimant Type:</strong> <?= e($claim['claimant_type'] ?? 'Student') ?></p>
+            <?php if (($claim['claimant_type'] ?? 'Student') === 'Student'): ?>
+                <p><strong>Student Number:</strong> <?= e($claim['student_no']) ?></p>
+            <?php endif; ?>
             <p><strong>Full Name:</strong> <?= e($claim['claimant']) ?></p>
             <p><strong>Contact Number:</strong> <?= e($claim['student_contact']) ?></p>
+            <?php if (($claim['claimant_type'] ?? 'Student') !== 'Student'): ?>
+                <p><strong>ID Type:</strong> <?= e($claim['id_type']) ?></p>
+                <p><strong>ID Checked by Staff:</strong> <?= !empty($claim['id_verified']) ? 'Yes' : 'No' ?></p>
+            <?php endif; ?>
         </section>
 
         <section class="card">
