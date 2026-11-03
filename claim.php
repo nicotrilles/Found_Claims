@@ -200,7 +200,7 @@ if (!$is_detail_page) {
             claims.id_verified,
             students.student_no,
             COALESCE(claims.claimant_name, students.full_name, 'Unknown claimant') AS claimant,
-            COALESCE(claims.claimant_contact, students.contact_no) AS student_contact,
+            COALESCE(claims.claimant_contact, students.contact_no) AS claimant_contact,
             items.item_id,
             items.item_name,
             items.description AS item_description,
@@ -290,7 +290,7 @@ if (!$is_detail_page) {
                                 <tr>
                                     <td><?= e($row['claim_id']) ?></td>
                                     <td><?= e($row['claimant_type'] ?? 'Student') ?></td>
-                                    <td><?= e($row['student_no']) ?></td>
+                                    <td><?= e($row['student_no']  ?: 'N/A') ?></td>
                                     <td><?= e($row['claimant']) ?></td>
                                     <td><?= e($row['item_name']) ?></td>
                                     <td><?= e($row['claim_date']) ?></td>
@@ -338,15 +338,28 @@ if (!$is_detail_page) {
 
         <section class="card">
             <h2>Claimant Information</h2>
+
             <p><strong>Claimant Type:</strong> <?= e($claim['claimant_type'] ?? 'Student') ?></p>
+
             <?php if (($claim['claimant_type'] ?? 'Student') === 'Student'): ?>
                 <p><strong>Student Number:</strong> <?= e($claim['student_no']) ?></p>
             <?php endif; ?>
+
             <p><strong>Full Name:</strong> <?= e($claim['claimant']) ?></p>
-            <p><strong>Contact Number:</strong> <?= e($claim['student_contact']) ?></p>
+            <p><strong>Contact Number:</strong> <?= e($claim['claimant_contact']) ?></p>
+
             <?php if (($claim['claimant_type'] ?? 'Student') !== 'Student'): ?>
                 <p><strong>ID Type:</strong> <?= e($claim['id_type']) ?></p>
-                <p><strong>ID Checked by Staff:</strong> <?= !empty($claim['id_verified']) ? 'Yes' : 'No' ?></p>
+
+                <p>
+                    <strong>Physical ID Inspection:</strong>
+
+                    <?php if (!empty($claim['id_verified'])): ?>
+                        <span class="status">Verified</span>
+                    <?php else: ?>
+                        <span class="status">Not verified</span>
+                    <?php endif; ?>
+                </p>
             <?php endif; ?>
         </section>
 
