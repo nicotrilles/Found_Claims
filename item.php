@@ -30,7 +30,8 @@ $sql = "
         items.item_id,
         items.item_name,
         categories.category_name,
-        students.full_name AS reporter,
+        reports.reporter_type,
+        COALESCE(reports.reporter_name, students.full_name, 'Anonymous') AS reporter,
         staff.full_name AS processed_by,
         items.location_found,
         items.item_status,
@@ -40,7 +41,7 @@ $sql = "
         ON items.category_id = categories.category_id
     INNER JOIN reports
         ON items.report_id = reports.report_id
-    INNER JOIN students
+    LEFT JOIN students
         ON reports.student_id = students.student_id
     INNER JOIN staff
         ON reports.staff_id = staff.staff_id
@@ -112,7 +113,7 @@ if ($message === '') {
     <section class="card">
         <h2>Item Records</h2>
         <p class="muted">
-            Review item details, their current status, and the staff member
+            Review item details, reporter information, their current status, and the staff member
             who processed each report.
         </p>
 

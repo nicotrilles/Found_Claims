@@ -355,3 +355,66 @@ tbody tr:hover {
         grid-template-columns: 1fr;
     }
 }
+
+.checkbox-group {
+    margin: 15px 0;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin: 3px 0 0;
+    flex-shrink: 0;
+}
+
+
+.autocomplete-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.autocomplete-option {
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    background: rgb(60, 59, 59);
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.autocomplete-option:hover {
+    background: #0d0d0d;
+}
+
+
+
+.autocomplete-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 4px;
+    margin-bottom: 10px;
+}
+
+.autocomplete-option {
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    background: rgb(60, 59, 59);
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.autocomplete-option:hover {
+    background: #0d0d0d;
+}

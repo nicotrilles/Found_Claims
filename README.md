@@ -1,76 +1,192 @@
-# School Lost and Found System
+# School Lost and Found Management System
 
-A web-based Lost and Found Management System for Aces Polytechnic College. The system helps staff manage found items, student reports, ownership claims, and claim verification.
+A web-based Lost and Found Management System developed for **Aces Polytechnic College**. The system helps the school's Lost and Found Office record found items, manage item information, process ownership claims, and monitor the return of items to their rightful owners.
+
+The system is operated by authorized staff. Students and other individuals can report found items or submit claims without needing their own system accounts.
 
 ## Features
 
-- **Found Item Reporting** — Record found items and the students who report them.
-- **Item Management** — Store item descriptions, categories, locations, images, and statuses.
-- **Student Records** — Manage student information associated with reports and claims.
-- **Claim Processing** — Record ownership claims and their verification details.
-- **Claim Decisions** — Approve or reject claims and update item statuses.
-- **Category Management** — Classify found items into categories.
-- **Staff Management** — Maintain staff information used to process reports and claims.
+### Found Item Reporting
+- Record found items submitted to the Lost and Found Office.
+- Support different reporter types:
+  - Student
+  - Faculty
+  - Guard
+  - Guest
+  - Anonymous
+- Allow existing students to be searched and selected through student autocomplete.
+- Store item details, descriptions, categories, colors, brands, and locations found.
+- Support image uploads for found items.
+
+### Item Management
+- View and manage recorded found items.
+- Organize items by category.
+- Track item statuses, including Found, Claimed, and Returned.
+- View item details and related records.
+
+### Claim Processing
+- Accept claims from students, faculty, guards, and guests.
+- Search for existing student records or register a student when necessary.
+- Require non-student claimants to provide their name, contact information, and ID type.
+- Require staff to confirm that a non-student claimant's physical ID was inspected.
+- Record ownership verification details.
+- Keep submitted claims pending until staff review.
+
+### Claim Verification and Decisions
+- Allow authorized staff to review submitted claims.
+- Approve or reject claims based on the ownership verification process.
+- Update item status when a claim is approved.
+- Maintain claim records for reference.
+
+### Staff and Records Management
+- Provide staff authentication.
+- Store student and staff information.
+- Maintain item categories, reports, claims, and item comments.
 
 ## Technologies Used
 
-- PHP
-- MySQL / MariaDB
-- HTML and CSS
-- XAMPP for local development
-- Git and GitHub for version control
+- **Backend:** PHP
+- **Database:** MySQL / MariaDB
+- **Frontend:** HTML, CSS, JavaScript
+- **Local Development:** XAMPP
+- **Database Management:** phpMyAdmin
+- **Version Control:** Git and GitHub
+
+## Database Structure
+
+The system uses the following main database tables:
+
+| Table | Purpose |
+|---|---|
+| `students` | Stores student information. |
+| `staff` | Stores staff information. |
+| `categories` | Stores found-item categories. |
+| `reports` | Records found-item reports and reporter information. |
+| `items` | Stores information about found items. |
+| `claims` | Records ownership claims and verification details. |
+| `item_comments` | Stores comments associated with found items. |
+
+For more information about database installation and migrations, see [`database/README.md`](database/README.md).
 
 ## Project Structure
 
 ```text
 Found_Claims/
+├── ajax/
+│   └── search_students.php
 ├── config/
+│   └── database.php
 ├── css/
-├── uploads/
-├── student/
+│   └── style.css
 ├── database/
-│   ├── schema.sql
-│   └── README.md
+│   ├── migrations/
+│   │   └── 2026_10_optional_reporters_nonstudent_claimants.sql
+│   ├── README.md
+│   └── schema.sql
+├── includes/
+│   ├── auth.php
+│   └── navigation.php
+├── uploads/
+├── claim.php
+├── claim_item.php
+├── index.php
+├── item.php
+├── item_comments.php
+├── public_items.php
+├── report_item.php
+├── right_join.php
+├── search_item.php
+├── staff_comments.php
+├── staff_login.php
+├── staff_logout.php
+├── staff_signup.php
 └── README.md
 ```
 
-*This is a guide to the intended organization. Adjust it to match the actual files in the repository.*
+*This structure highlights the main application files. Some folders may contain additional files.*
 
 ## Requirements
 
-- XAMPP or another compatible local PHP and MySQL/MariaDB environment
-- A web browser
-- A database management tool, such as phpMyAdmin
-- Git (optional, for cloning the repository)
+Before running the application, prepare the following:
 
-## Local Installation
+- XAMPP or another compatible PHP and MySQL/MariaDB environment.
+- PHP version compatible with the project's code.
+- MySQL or MariaDB.
+- A modern web browser.
+- phpMyAdmin or another database management tool.
+- Git (optional, for cloning the repository).
 
-1. Clone or download this repository into your local web server directory, such as `C:\xampp\htdocs\Found_Claims`.
-2. Start Apache and MySQL from the XAMPP Control Panel.
-3. Open phpMyAdmin and create or select the database named `school_lost_found`.
-4. Configure the database connection in the project's configuration file. Use your local database credentials.
-5. If you need to create the database structure from scratch, review [`database/schema.sql`](database/schema.sql) and follow the instructions in [`database/README.md`](database/README.md).
-6. Open the application through your local server, for example `http://localhost/Found_Claims/`, and navigate to the appropriate page.
+## Installation and Setup
 
-**Important:** Do not import the schema into an existing working database without backing it up and checking for conflicts first.
+### 1. Clone the Repository
 
-## Database
+Open a terminal and run:
 
-The database is designed to organize student information, staff records, item categories, reports, found items, claims, and item comments.
+```bash
+git clone https://github.com/nicotrilles/Found_Claims.git
+```
 
-See [`database/README.md`](database/README.md) for information about the SQL file.
+Place the project inside your XAMPP `htdocs` directory.
 
-## Security Notes
+Example:
 
-- Do not commit database passwords or other secrets to a public repository.
-- Store staff passwords as secure password hashes, not plaintext.
-- Validate user input and use prepared statements for database operations.
-- Restrict access to administrative actions and sensitive student information.
+```text
+C:\xampp\htdocs\Found_Claims
+```
+
+### 2. Start XAMPP
+
+Open the XAMPP Control Panel and start:
+
+- Apache
+- MySQL
+
+### 3. Create the Database
+
+1. Open phpMyAdmin.
+2. Create a database for the application.
+3. Review [`database/schema.sql`](database/schema.sql).
+4. Import the schema into the database.
+
+If you are setting up a fresh database, follow the additional instructions in [`database/README.md`](database/README.md), including the migration required for the optional reporter and non-student claimant features.
+
+### 4. Configure the Database Connection
+
+Open:
+
+```text
+config/database.php
+```
+
+Set the database host, username, password, and database name according to your local environment.
+
+Do not commit database credentials or other sensitive information to the repository.
+
+### 5. Open the Application
+
+Open your browser and visit:
+
+```text
+http://localhost/Found_Claims/
+```
+
+Navigate to the available application pages.
+
+## Security and Data Handling
+
+- Staff authentication is required for protected staff operations.
+- Passwords should be stored using secure password hashing.
+- Database operations should use prepared statements.
+- Validate and sanitize user input.
+- Validate uploaded files and restrict accepted file types and sizes.
+- Do not store non-student ID numbers or ID images.
+- The `id_verified` field indicates that staff physically inspected a claimant's ID. It does not independently establish ownership of an item.
+- Keep database backups before applying schema changes or migrations.
 
 ## Project Status
 
-Developed as an academic project. Features and documentation may change as development continues.
+This project is developed as an academic system for Aces Polytechnic College. Its features and documentation may be updated as development continues.
 
 ## License
 
-No license has been specified yet. Unless a license is added, reuse and redistribution are subject to the applicable copyright rules.
+No license has been specified yet. Unless a license is added, reuse and redistribution are subject to applicable copyright rules.
