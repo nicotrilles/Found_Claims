@@ -7,7 +7,7 @@
 -- 3. Run this file ONCE. It alters existing tables; it does not recreate them.
 -- 4. This migration intentionally does not store ID numbers or ID images.
 
-USE school_lost_found;
+USE school_lost_found_rebuild;
 
 -- Allow reports to exist without a student record (anonymous/non-student reporter).
 ALTER TABLE reports
