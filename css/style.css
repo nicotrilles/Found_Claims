@@ -418,3 +418,24 @@ tbody tr:hover {
 .autocomplete-option:hover {
     background: #0d0d0d;
 }
+
+
+.comment-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.button-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-danger:hover {
+    background-color: #bb2d3b;
+}
