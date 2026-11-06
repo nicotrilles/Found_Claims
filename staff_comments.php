@@ -10,12 +10,38 @@ function e($value): string {
 $error = '';
 $success = '';
 
+// Generate a CSRF token for comment actions.
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $comment_id = filter_input(INPUT_POST, 'comment_id', FILTER_VALIDATE_INT);
+    $action = $_POST['action'] ?? '';
+    $csrf_token = $_POST['csrf_token'] ?? '';
 
-    if (!$comment_id || $comment_id < 1) {
+    if (
+        !is_string($csrf_token) ||
+        !hash_equals($_SESSION['csrf_token'], $csrf_token)
+    ) {
+        $error = 'Invalid request. Please try again.';
+    } elseif (!$comment_id || $comment_id < 1) {
         $error = 'Invalid comment.';
-    } else {
+    } elseif ($action === 'delete') {
+        $stmt = $conn->prepare(
+            "DELETE FROM item_comments WHERE comment_id = ?"
+        );
+        $stmt->bind_param('i', $comment_id);
+
+        if ($stmt->execute() && $stmt->affected_rows === 1) {
+            $success = 'Comment deleted successfully.';
+        } else {
+            $error = 'Comment not found or unable to delete it.';
+        }
+
+        $stmt->close();
+
+    } elseif ($action === 'review') {
         $stmt = $conn->prepare(
             "UPDATE item_comments
              SET comment_status = 'Reviewed'
@@ -23,13 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $stmt->bind_param('i', $comment_id);
 
-        if ($stmt->execute() && $stmt->affected_rows >= 0) {
+        if ($stmt->execute()) {
             $success = 'Comment marked as reviewed.';
         } else {
             $error = 'Unable to update the comment.';
         }
 
         $stmt->close();
+
+    } else {
+        $error = 'Invalid action.';
     }
 }
 
@@ -51,6 +80,7 @@ $sql = "
 
 $result = $conn->query($sql);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,6 +90,7 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
 <?php require_once __DIR__ . '/includes/navigation.php'; ?>
 
 <main class="container">
@@ -78,6 +109,7 @@ $result = $conn->query($sql);
         <?php if ($result->num_rows === 0): ?>
             <p>No student comments have been submitted yet.</p>
         <?php else: ?>
+
             <?php while ($comment = $result->fetch_assoc()): ?>
                 <article class="card">
                     <h2><?= e($comment['item_name']) ?></h2>
@@ -97,17 +129,43 @@ $result = $conn->query($sql);
                     <p><strong>Comment:</strong></p>
                     <p><?= nl2br(e($comment['comment_text'])) ?></p>
 
-                    <?php if ($comment['comment_status'] === 'New'): ?>
-                        <form method="POST">
-                            <input type="hidden" name="comment_id"
-                                   value="<?= (int) $comment['comment_id'] ?>">
-                            <button type="submit">Mark as Reviewed</button>
-                        </form>
-                    <?php endif; ?>
+                    <div class="comment-actions">
+
+                        <?php if ($comment['comment_status'] === 'New'): ?>
+                            <form method="POST">
+                                <input type="hidden" name="comment_id"
+                                       value="<?= (int) $comment['comment_id'] ?>">
+                                <input type="hidden" name="action"
+                                       value="review">
+                                <input type="hidden" name="csrf_token"
+                                       value="<?= e($_SESSION['csrf_token']) ?>">
+
+                                <button type="submit">
+                                    Mark as Reviewed
+                                </button>
+                            </form>
+                        <?php endif; ?>
+
+<form method="POST"
+      onsubmit="return confirm('Are you sure you want to delete this comment? This action cannot be undone.');">
+    <input type="hidden" name="comment_id"
+           value="<?= (int) $comment['comment_id'] ?>">
+    <input type="hidden" name="action" value="delete">
+    <input type="hidden" name="csrf_token"
+           value="<?= e($_SESSION['csrf_token']) ?>">
+
+    <button type="submit" class="button-danger">
+        Delete Comment
+    </button>
+</form>
+
+                    </div>
                 </article>
             <?php endwhile; ?>
+
         <?php endif; ?>
     </section>
 </main>
+
 </body>
 </html>
